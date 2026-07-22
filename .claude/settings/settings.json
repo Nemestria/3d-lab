@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Grep",
+      "Glob",
+      "Edit",
+      "Write",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "Bash(npx:*)",
+      "Bash(git add:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git commit:*)",
+      "Bash(git log:*)",
+      "Bash(vercel:*)",
+      "Bash(node --version:*)"
+    ],
+    "deny": [
+      "Bash(rm -rf:*)",
+      "Bash(curl:*)",
+      "Bash(wget:*)",
+      "Bash(git push --force:*)"
+    ]
+  }
+}
