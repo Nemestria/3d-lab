@@ -21,6 +21,6 @@ Legend: `[ ]` not started · `[~]` in progress · `[x]` shipped
 - [ ] P11 — Twisted 3D Text (GLSL)
 - [ ] P12 — CAPSTONE: Hover Flowmap
 ## Logistics
-- Repo: <github-url-placeholder>
+- Repo: https://github.com/Nemestria/3d-lab
 - Live: lab.alejandrosancho.com
 - Stack: Next.js App Router, TS, three.js, gsap, @react-three/fiber, @react-three/drei
