@@ -5,7 +5,7 @@ Claude reads this every session to know where the user is. Update it on `/ship`.
 Legend: `[ ]` not started · `[~]` in progress · `[x]` shipped
  
 ## M1 — Vanilla Fundamentals
-- [ ] P1 — Spinning Cube Hero
+- [~] P1 — Spinning Cube Hero
 - [ ] P2 — Interactive Solar System
 - [ ] P3 — GLTF Product Configurator
 ## M2 — Motion & Scrollytelling
