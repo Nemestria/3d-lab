@@ -18,7 +18,7 @@ const LAB: Milestone[] = [
     title: "Vanilla Fundamentals",
     projects: [
       { id: "P1", name: "Spinning Cube Hero", href: "/m1-01-spinning-cube-hero" },
-      { id: "P2", name: "Interactive Solar System" },
+      { id: "P2", name: "Interactive Solar System", href: "/m1-02-interactive-solar-system" },
       { id: "P3", name: "GLTF Product Configurator" },
     ],
   },
@@ -81,12 +81,12 @@ function Card({ project }: { project: Project }) {
 
   if (!live) {
     return (
-      <div
-        className={`${base} cursor-default border-zinc-900 bg-zinc-950/40`}
-        aria-disabled
+      <Link
+        href="/wip"
+        className={`${base} border-zinc-900 bg-zinc-950/40 hover:border-zinc-700`}
       >
         {body}
-      </div>
+      </Link>
     );
   }
 
