@@ -8,12 +8,12 @@ Scene · PerspectiveCamera · WebGLRenderer · lights · BoxGeometry · material
 
 ## Done when
 
-- [ ] A cube renders full-viewport and spins smoothly (~60fps).
-- [ ] `renderer.setPixelRatio(Math.min(devicePixelRatio, 2))` is set.
-- [ ] Resize keeps the cube un-stretched (camera aspect + renderer size update).
-- [ ] Cleanup on unmount: `raf` cancelled, geometry/material/renderer disposed, canvas removed.
-- [ ] Tested on mobile viewport.
-- [ ] No `any` types.
+- [V] A cube renders full-viewport and spins smoothly (~60fps).
+- [V] `renderer.setPixelRatio(Math.min(devicePixelRatio, 2))` is set.
+- [V] Resize keeps the cube un-stretched (camera aspect + renderer size update).
+- [V] Cleanup on unmount: `raf` cancelled, geometry/material/renderer disposed, canvas removed.
+- [V] Tested on mobile viewport.
+- [V] No `any` types.
 
 ## Route
 
