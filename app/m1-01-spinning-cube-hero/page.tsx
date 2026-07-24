@@ -1,7 +1,6 @@
 'use client'
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
-import ControlsPanel from '@/components/ui/ControlsPanel'
 
 
 
@@ -67,11 +66,20 @@ export default function LabExperiment() {
   return (
   <>
     <div ref={mountRef} className="fixed inset-0 w-screen h-screen" />
-    <ControlsPanel
-      onColorChange={(hex) => materialRef.current?.color.set(hex)}
-      onSizeChange={(size) => meshRef.current?.scale.setScalar(size)}
-      onSpeedChange={(speed) => { speedRef.current = speed }}
-    />
+    <div className='fixed right-4 top-4 z-50 flex flex-col gap-3 rounded-lg bg-black/60 p-4'>
+      <label className='text-xs text-zinc-300'>
+        Color
+        <input type="color" onChange={(e) => { materialRef.current?.color.set(e.target.value)}} />
+      </label>
+      <label className='text-xs text-zinc-300'>
+        Size
+        <input type="range" min={0.1} max={3} step={0.1} onChange={(e) => { meshRef.current?.scale.setScalar(Number(e.target.value))}} />
+      </label>
+      <label className='text-xs text-zinc-300'>
+        Speed
+        <input type="range" min={0} max={0.05} step={0.001} onChange={(e) => { speedRef.current = Number(e.target.value)}} />
+      </label>
+      </div>
   </>
   )
 }
