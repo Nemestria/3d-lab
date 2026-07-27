@@ -2,11 +2,38 @@
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/Addons.js'
-import { Clock } from 'three'
-
+import { Timer } from 'three/src/core/Timer.js'
 // Do NOT remove 'use client' — three.js runs in window.
+
+class PickHelper {
+      constructor () {
+        this.raycaster = new THREE.Raycaster();
+        this.pickedObject = null;
+        this.pickedObjectSavedColor = 0;
+      }
+      pick(normalizedPosition, scene, camera, time) {
+        //restore the color if there is a picked object
+        if (this.pickedObject) {
+          this.pickedObject.material.emissive.setHex(this.pickedObjectSavedColor);
+          this.pickedObject = undefined;
+        }
+
+        //cast a ray through
+        this.raycaster.setFromCamera(normalizedPosition, camera);
+        //get the list of object the ray intersected
+        const intersectedObjects = this.raycaster.intersectedObjects(scene.children);
+        if (intersectedObjects.length) {
+          this.pickedObject = intersectedObjects[0].object;
+          this.pickedObjectSavedColor = this.pickedObject.material.emissive.getHex();
+          this.pickedObject.material.emissive.setHex(0xFFFF00);
+        }
+      }
+    }
+
+
 export default function LabExperiment() {
   const mountRef = useRef<HTMLDivElement>(null)
+  
   useEffect(() => {
     const mount = mountRef.current
     if (!mount) return
@@ -27,6 +54,9 @@ export default function LabExperiment() {
     const geometry = new THREE.SphereGeometry(radius, widthSegments, heightSegments);
     const emiMaterial = new THREE.MeshPhongMaterial({emissive: 0xFFFF00});
 
+    scene.background = new THREE.Color(0x060a1a);
+    scene.fog = new THREE.Fog(0x060a1a, 400, 2500) //color, near, far
+
     renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
     renderer.setSize(window.innerWidth, window.innerHeight);
     mount.appendChild(renderer.domElement);
@@ -41,12 +71,8 @@ export default function LabExperiment() {
     controls.enableDamping = true;
     controls.dampingFactor = 0.01;
     
-
-
-    const objects = [];
-    
-    
-
+    //Objects Array
+    const objects: THREE.Object3D[] = [];
     // ⬇️ TODO [P2]: planets — SphereGeometry each, different sizes/colors.
     //    KEY CONCEPT: orbits come from the SCENE GRAPH, not from math you write.
     //    Make a pivot (new THREE.Object3D or Group) at the origin, add the planet
@@ -61,7 +87,7 @@ export default function LabExperiment() {
     //    (planets need a lit material: MeshStandardMaterial, not Basic).
     // ⬇️ TODO [P2]: the sun — SphereGeometry + a bright material at the center.
     const sun = new THREE.Mesh( geometry, emiMaterial );
-    sun.scale.set(15,15,15);
+    sun.scale.set(35,35,35);
     sun.receiveShadow = true;
     sun.position.set(0,0,0);
     pivotPoint.add(sun);
@@ -71,33 +97,151 @@ export default function LabExperiment() {
     const mercuryMat = new THREE.MeshStandardMaterial( { color: 0xbf3232 } );
     const mercuryGeo = new THREE.SphereGeometry (radius, widthSegments, heightSegments);
     const mercury = new THREE.Mesh( mercuryGeo, mercuryMat );
+    const mercuryPivot = new THREE.Object3D();
     mercury.receiveShadow = true;
     mercury.scale.set(5, 5, 5)
     mercury.position.set(125, 0, 0);
-    pivotPoint.add(mercury);
-    objects.push(mercury);    
+    scene.add(mercuryPivot);
+    mercuryPivot.add(mercury);
+    objects.push(mercury);  
+    
+    // ## Venus
+    const venusMat = new THREE.MeshStandardMaterial( { color: 0xFF7F50 } );
+    const venusGeo = new THREE.SphereGeometry (radius, widthSegments, heightSegments);
+    const venus = new THREE.Mesh( venusGeo, venusMat );
+    const venusPivot = new THREE.Object3D();
+    venus.receiveShadow = true;
+    venus.scale.set(10, 10, 10)
+    venus.position.set(200, 10, 0);
+    scene.add(venusPivot);
+    venusPivot.add(venus);
+    objects.push(venus);  
 
+    // ## Earth
+    const earthMat = new THREE.MeshStandardMaterial( { color: 0x0000CD } );
+    const earthGeo = new THREE.SphereGeometry (radius, widthSegments, heightSegments);
+    const earth = new THREE.Mesh( earthGeo, earthMat );
+    const earthPivot = new THREE.Object3D();
+    earth.receiveShadow = true;
+    earth.scale.set(15, 15, 15)
+    earth.position.set(300, 0, 0);
+    scene.add(earthPivot);
+    earthPivot.add(earth);
+    objects.push(earth);  
 
-    const color = 0xFFFFFF;
-    const intensityPLight = 500;
+    // ## Mars
+    const marsMat = new THREE.MeshStandardMaterial( { color: 0xFF4500 } );
+    const marsGeo = new THREE.SphereGeometry (radius, widthSegments, heightSegments);
+    const mars = new THREE.Mesh( marsGeo, marsMat );
+    const marsPivot = new THREE.Object3D();
+    mars.receiveShadow = true;
+    mars.scale.set(8, 8, 8)
+    mars.position.set(375, 0, 0);
+    scene.add(mercuryPivot);
+    marsPivot.add(mars);
+    objects.push(mars);  
+
+    // ## Jupiter
+    const jupiterMat = new THREE.MeshStandardMaterial( { color: 0xD2691E } );
+    const jupiterGeo = new THREE.SphereGeometry (radius, widthSegments, heightSegments);
+    const jupiter = new THREE.Mesh( jupiterGeo, jupiterMat );
+    const jupiterPivot = new THREE.Object3D();
+    jupiter.receiveShadow = true;
+    jupiter.scale.set(30, 30, 30)
+    jupiter.position.set(500, 0, 0);
+    scene.add(jupiterPivot);
+    jupiterPivot.add(jupiter);
+    objects.push(jupiter);
+
+    // ## Saturn
+    const saturnMat = new THREE.MeshStandardMaterial( { color: 0xF4A460 } );
+    const saturnGeo = new THREE.SphereGeometry (radius, widthSegments, heightSegments);
+    const saturn = new THREE.Mesh( saturnGeo, saturnMat );
+    const saturnPivot = new THREE.Object3D();
+    saturn.receiveShadow = true;
+    saturn.scale.set(25, 25, 25)
+    saturn.position.set(675, 0, 0);
+    scene.add(saturnPivot);
+    saturnPivot.add(saturn);
+    objects.push(saturn);
+
+    // ## Uranus
+    const uranusMat = new THREE.MeshStandardMaterial( { color: 0xB0C4DE } );
+    const uranusGeo = new THREE.SphereGeometry (radius, widthSegments, heightSegments);
+    const uranus = new THREE.Mesh( uranusGeo, uranusMat );
+    const uranusPivot = new THREE.Object3D();
+    uranus.receiveShadow = true;
+    uranus.scale.set(15, 15, 15)
+    uranus.position.set(750, 0, 0);
+    scene.add(uranusPivot);
+    uranusPivot.add(uranus);
+    objects.push(uranus);
+
+    // ## Neptune
+
+    const neptuneMat = new THREE.MeshStandardMaterial( { color: 0x5F9EA0 });
+    const neptuneGeo = new THREE.SphereGeometry (radius, widthSegments, heightSegments);
+    const neptune = new THREE.Mesh( neptuneGeo, neptuneMat );
+    const neptunePivot = new THREE.Object3D();
+    neptune.receiveShadow = true;
+    neptune.scale.set(18, 18, 18);
+    neptune.position.set(825, 0, 0)
+    scene.add(neptunePivot)
+    neptunePivot.add(neptune);
+    objects.push(neptune);
+
+    // ## Pluto is a planet
+
+    const plutoMat = new THREE.MeshStandardMaterial( { color: 0xB0E0E6 });
+    const plutoGeo = new THREE.SphereGeometry (radius, widthSegments, heightSegments);
+    const pluto = new THREE.Mesh( plutoGeo, plutoMat );
+    const plutoPivot = new THREE.Object3D();
+    pluto.receiveShadow = true;
+    pluto.scale.set(5, 5, 5);
+    pluto.position.set(1000, 0, 0);
+    scene.add(plutoPivot);
+    plutoPivot.add(pluto);
+    objects.push(pluto);
+
     const dirLight = new THREE.DirectionalLight( 0xf0fdff, 2.5 );
-
+    dirLight.position.set(90,50,120);
     scene.add(dirLight);
+    
     // ⬇️ TODO [P2]: interactivity — a Raycaster + pointer Vector2. On click,
-    //    setFromCamera(pointer, camera), intersectObjects(planets), react to hit[0].
+    //    setFromCamera(pointer, camera), intersectObjects(planets), react to hit[0]
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2();
+
+    const onClick = (e: MouseEvent) => {
+      pointer.x = (e.clientX / window.innerWidth) * 2 - 1
+      pointer.y = -(e.clientY / window.innerHeight) * 2 - 1
+      raycaster.setFromCamera(pointer, camera)
+  const hits = raycaster.intersectObjects(objects)   // or a planets-only array
+  if (hits.length > 0) console.log(hits[0].object.name)
+}
+renderer.domElement.addEventListener('click', onClick)
+
     // ⬇️ TODO [P2]: (optional) OrbitControls so you can drag to look around.
     let raf = 0
+    const timer = new Timer();
+    timer.connect( document );
     const tick = (  ) => {
+      const speed = timer.update().getDelta();
 
-      const time = new THREE.Clock.getElapsedTime();
-      let planetRotation = 0;
-
-      planetRotation *= time;
       // ⬇️ TODO [P2]: spin each pivot (orbit) + each planet on its own axis.
       //    Different speeds per planet. Then renderer.render(scene, camera).
       objects.forEach( ( obj ) => {
-        obj.rotation.y = planetRotation;  
+        obj.rotation.z += 1 * speed;
       })
+      mercuryPivot.rotation.z += 0.3 * speed;
+      venusPivot.rotation.z += 0.45 * speed;
+      earthPivot.rotation.z += 0.51 * speed;
+      marsPivot.rotation.z += 0.55 * speed;
+      saturnPivot.rotation.z += 0.35 * speed;
+      jupiterPivot.rotation.z += 0.23 * speed;
+      uranusPivot.rotation.z += 0.289 * speed;
+      neptunePivot.rotation.z += 0.362 * speed;
+      plutoPivot.rotation.z += 0.08 * speed;
 
       controls.update();
       renderer.render(scene, camera);
