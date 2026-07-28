@@ -253,7 +253,7 @@ export default function LabExperiment() {
       //    renderer.dispose(), OrbitControls.dispose() if used, remove the canvas,
       //    and remove your pointer listener.
       window.removeEventListener('click', onClick);
-      renderer.domElement.removeEventListener('click', onClick);
+      renderer.domElement.removeEventListener('click', onClick);  
       mount.removeChild(renderer.domElement);
       renderer.dispose();
       controls.dispose();
