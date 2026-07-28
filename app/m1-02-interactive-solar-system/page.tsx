@@ -5,32 +5,6 @@ import { OrbitControls } from 'three/examples/jsm/Addons.js'
 import { Timer } from 'three/src/core/Timer.js'
 // Do NOT remove 'use client' — three.js runs in window.
 
-class PickHelper {
-      constructor () {
-        this.raycaster = new THREE.Raycaster();
-        this.pickedObject = null;
-        this.pickedObjectSavedColor = 0;
-      }
-      pick(normalizedPosition, scene, camera, time) {
-        //restore the color if there is a picked object
-        if (this.pickedObject) {
-          this.pickedObject.material.emissive.setHex(this.pickedObjectSavedColor);
-          this.pickedObject = undefined;
-        }
-
-        //cast a ray through
-        this.raycaster.setFromCamera(normalizedPosition, camera);
-        //get the list of object the ray intersected
-        const intersectedObjects = this.raycaster.intersectedObjects(scene.children);
-        if (intersectedObjects.length) {
-          this.pickedObject = intersectedObjects[0].object;
-          this.pickedObjectSavedColor = this.pickedObject.material.emissive.getHex();
-          this.pickedObject.material.emissive.setHex(0xFFFF00);
-        }
-      }
-    }
-
-
 export default function LabExperiment() {
   const mountRef = useRef<HTMLDivElement>(null)
   
@@ -92,6 +66,7 @@ export default function LabExperiment() {
     sun.position.set(0,0,0);
     pivotPoint.add(sun);
     objects.push(sun);
+    sun.name = "Sun";
 
     // ## Mercury
     const mercuryMat = new THREE.MeshStandardMaterial( { color: 0xbf3232 } );
@@ -103,7 +78,8 @@ export default function LabExperiment() {
     mercury.position.set(125, 0, 0);
     scene.add(mercuryPivot);
     mercuryPivot.add(mercury);
-    objects.push(mercury);  
+    objects.push(mercury);
+    mercury.name = "Mercury";  
     
     // ## Venus
     const venusMat = new THREE.MeshStandardMaterial( { color: 0xFF7F50 } );
@@ -116,7 +92,7 @@ export default function LabExperiment() {
     scene.add(venusPivot);
     venusPivot.add(venus);
     objects.push(venus);  
-
+    venus.name = "Venus"
     // ## Earth
     const earthMat = new THREE.MeshStandardMaterial( { color: 0x0000CD } );
     const earthGeo = new THREE.SphereGeometry (radius, widthSegments, heightSegments);
@@ -128,7 +104,7 @@ export default function LabExperiment() {
     scene.add(earthPivot);
     earthPivot.add(earth);
     objects.push(earth);  
-
+    earth.name = "Earth";
     // ## Mars
     const marsMat = new THREE.MeshStandardMaterial( { color: 0xFF4500 } );
     const marsGeo = new THREE.SphereGeometry (radius, widthSegments, heightSegments);
@@ -137,10 +113,10 @@ export default function LabExperiment() {
     mars.receiveShadow = true;
     mars.scale.set(8, 8, 8)
     mars.position.set(375, 0, 0);
-    scene.add(mercuryPivot);
+    scene.add(marsPivot);
     marsPivot.add(mars);
     objects.push(mars);  
-
+    mars.name = "Mars"
     // ## Jupiter
     const jupiterMat = new THREE.MeshStandardMaterial( { color: 0xD2691E } );
     const jupiterGeo = new THREE.SphereGeometry (radius, widthSegments, heightSegments);
@@ -152,7 +128,7 @@ export default function LabExperiment() {
     scene.add(jupiterPivot);
     jupiterPivot.add(jupiter);
     objects.push(jupiter);
-
+    jupiter.name = "Jupiter";
     // ## Saturn
     const saturnMat = new THREE.MeshStandardMaterial( { color: 0xF4A460 } );
     const saturnGeo = new THREE.SphereGeometry (radius, widthSegments, heightSegments);
@@ -164,7 +140,7 @@ export default function LabExperiment() {
     scene.add(saturnPivot);
     saturnPivot.add(saturn);
     objects.push(saturn);
-
+    saturn.name = "Saturn"
     // ## Uranus
     const uranusMat = new THREE.MeshStandardMaterial( { color: 0xB0C4DE } );
     const uranusGeo = new THREE.SphereGeometry (radius, widthSegments, heightSegments);
@@ -176,7 +152,7 @@ export default function LabExperiment() {
     scene.add(uranusPivot);
     uranusPivot.add(uranus);
     objects.push(uranus);
-
+    uranus.name = "Uranus"
     // ## Neptune
 
     const neptuneMat = new THREE.MeshStandardMaterial( { color: 0x5F9EA0 });
@@ -189,7 +165,7 @@ export default function LabExperiment() {
     scene.add(neptunePivot)
     neptunePivot.add(neptune);
     objects.push(neptune);
-
+    neptune.name = "Neptune"
     // ## Pluto is a planet
 
     const plutoMat = new THREE.MeshStandardMaterial( { color: 0xB0E0E6 });
@@ -202,6 +178,7 @@ export default function LabExperiment() {
     scene.add(plutoPivot);
     plutoPivot.add(pluto);
     objects.push(pluto);
+    pluto.name = "Pluto"
 
     const dirLight = new THREE.DirectionalLight( 0xf0fdff, 2.5 );
     dirLight.position.set(90,50,120);
@@ -211,16 +188,27 @@ export default function LabExperiment() {
     //    setFromCamera(pointer, camera), intersectObjects(planets), react to hit[0]
     const raycaster = new THREE.Raycaster();
     const pointer = new THREE.Vector2();
-
     const onClick = (e: MouseEvent) => {
-      pointer.x = (e.clientX / window.innerWidth) * 2 - 1
-      pointer.y = -(e.clientY / window.innerHeight) * 2 - 1
-      raycaster.setFromCamera(pointer, camera)
-  const hits = raycaster.intersectObjects(objects)   // or a planets-only array
-  if (hits.length > 0) console.log(hits[0].object.name)
-}
-renderer.domElement.addEventListener('click', onClick)
+      // 1. mouse pixels → NDC (−1..1), the space the ray needs
+      pointer.x =  (e.clientX / window.innerWidth)  * 2 - 1
+      pointer.y = -(e.clientY / window.innerHeight) * 2 + 1
 
+      // 2. aim the ray from the camera through that point
+      raycaster.setFromCamera(pointer, camera)
+
+      // 3. fire it at your objects — sorted array, nearest first
+      const hits = raycaster.intersectObjects(objects)
+      
+      // 4. act on the nearest hit (guard: empty click returns [])
+      if (hits.length > 0) {
+        const mesh = hits[0].object as THREE.Mesh;
+        const mat = mesh.material as THREE.MeshStandardMaterial;
+        const original = mat.color.getHex();
+        mat.color.set(0xffffff);
+        setTimeout(() => mat.color.setHex(original), 1000)
+        console.log('hit:', hits[0].object.name)
+      }
+}
     // ⬇️ TODO [P2]: (optional) OrbitControls so you can drag to look around.
     let raf = 0
     const timer = new Timer();
@@ -256,12 +244,40 @@ renderer.domElement.addEventListener('click', onClick)
     }
     window.addEventListener('resize', onResize)
     // ⬇️ TODO [P2]: add your pointer/click listener here (and remove it in cleanup).
+    window.addEventListener('click', onClick)
+
     return () => {
       cancelAnimationFrame(raf)
       window.removeEventListener('resize', onResize)
       // ⬇️ TODO [P2]: dispose EVERY geometry + material (sun + all planets),
       //    renderer.dispose(), OrbitControls.dispose() if used, remove the canvas,
       //    and remove your pointer listener.
+      window.removeEventListener('click', onClick);
+      renderer.domElement.removeEventListener('click', onClick);
+      mount.removeChild(renderer.domElement);
+      renderer.dispose();
+      controls.dispose();
+      sun.geometry.dispose();
+      sun.material.dispose();
+      mercury.geometry.dispose();
+      mercury.material.dispose();
+      venus.geometry.dispose();
+      venus.material.dispose();
+      earth.geometry.dispose();
+      earth.material.dispose();
+      mars.geometry.dispose();
+      mars.material.dispose();
+      jupiter.geometry.dispose();
+      jupiter.material.dispose();
+      saturn.geometry.dispose();
+      saturn.material.dispose();
+      neptune.geometry.dispose();
+      neptune.material.dispose();
+      uranus.geometry.dispose();
+      uranus.material.dispose();
+      pluto.geometry.dispose();
+      pluto.material.dispose();
+      
     }
   }, [])
   return <div ref={mountRef} className="fixed inset-0 w-screen h-screen" />

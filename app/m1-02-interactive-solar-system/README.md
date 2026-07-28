@@ -11,15 +11,15 @@ per-object transforms (orbit + self-spin) · Raycaster picking · resize · disp
 
 ## Done when
 
-- [ ] A central sun + at least 3 planets render, each orbiting at its own speed.
-- [ ] Orbits are driven by rotating parent pivots, not by hand-written sin/cos per frame.
-- [ ] Each planet also spins on its own axis.
-- [ ] Clicking a planet does something visible (highlight, log, select).
-- [ ] `renderer.setPixelRatio(Math.min(devicePixelRatio, 2))` is set.
-- [ ] Resize keeps the scene un-stretched.
-- [ ] Cleanup: raf cancelled, every geometry/material disposed, renderer disposed, listeners removed, canvas removed.
-- [ ] Tested on mobile viewport.
-- [ ] No `any` types.
+- [x] A central sun + at least 3 planets render, each orbiting at its own speed.
+- [x] Orbits are driven by rotating parent pivots, not by hand-written sin/cos per frame.
+- [x] Each planet also spins on its own axis.
+- [x] Clicking a planet does something visible (highlight, log, select).
+- [x] `renderer.setPixelRatio(Math.min(devicePixelRatio, 2))` is set.
+- [x] Resize keeps the scene un-stretched.
+- [x] Cleanup: raf cancelled, every geometry/material disposed, renderer disposed, listeners removed, canvas removed.
+- [x] Tested on mobile viewport.
+- [x] No `any` types.
 
 ## Route
 
