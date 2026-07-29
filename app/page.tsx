@@ -19,7 +19,7 @@ const LAB: Milestone[] = [
     projects: [
       { id: "P1", name: "Spinning Cube Hero", href: "/m1-01-spinning-cube-hero" },
       { id: "P2", name: "Interactive Solar System", href: "/m1-02-interactive-solar-system" },
-      { id: "P3", name: "GLTF Product Configurator" },
+      { id: "P3", name: "GLTF Product Configurator", href: "/m1-03-gltf-product-configurator" },
     ],
   },
   {
