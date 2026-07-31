@@ -26,7 +26,7 @@ const LAB: Milestone[] = [
     code: "M2",
     title: "Motion & Scrollytelling",
     projects: [
-      { id: "P4", name: "Cinematic Camera Tour" },
+      { id: "P4", name: "Cinematic Camera Tour", href: "/m2-04-cinematic-camera-tour" },
       { id: "P5", name: "Scrollytelling Exploded View" },
       { id: "P6", name: "Neon Bloom Sign" },
     ],

@@ -18,15 +18,15 @@ parts). Free sources: [Khronos glTF samples](https://github.com/KhronosGroup/glT
 
 ## Done when
 
-- [ ] A `.glb` model loads and renders, lit well enough to read its form.
-- [ ] Loading is handled async (model added in the loader callback, no crash before it arrives).
-- [ ] The user can orbit the product (OrbitControls).
-- [ ] At least one part can be reconfigured live — color/material swap via UI or click.
-- [ ] `renderer.setPixelRatio(Math.min(devicePixelRatio, 2))` is set.
-- [ ] Resize keeps the model un-stretched.
-- [ ] Cleanup: raf cancelled, loaded model's geometries/materials/textures disposed, renderer disposed, listeners removed, canvas removed.
-- [ ] Tested on mobile viewport.
-- [ ] No `any` types.
+- [V] A `.glb` model loads and renders, lit well enough to read its form.
+- [V] Loading is handled async (model added in the loader callback, no crash before it arrives).
+- [V] The user can orbit the product (OrbitControls).
+- [V] At least one part can be reconfigured live — color/material swap via UI or click.
+- [V] `renderer.setPixelRatio(Math.min(devicePixelRatio, 2))` is set.
+- [V] Resize keeps the model un-stretched.
+- [V] Cleanup: raf cancelled, loaded model's geometries/materials/textures disposed, renderer disposed, listeners removed, canvas removed.
+- [V] Tested on mobile viewport.
+- [V] No `any` types.
 
 ## Route
 

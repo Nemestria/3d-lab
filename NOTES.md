@@ -41,6 +41,34 @@ it earned a spot so future-you doesn't re-read junk.
 
 ---
 
+## 📦 Loading & Framing Models
+
+- **[Box3](https://threejs.org/docs/#api/en/math/Box3)** — the axis-aligned bounding box; how you measure a loaded model you didn't build and don't know the scale of.
+  - `const box = new THREE.Box3().setFromObject(gltf.scene)` — wraps the whole model, world-space.
+  - `const size = box.getSize(new THREE.Vector3())` → how big it is per axis. `const center = box.getCenter(new THREE.Vector3())` → where its middle sits.
+  - **Store `center` in a `const`** — if you only call `getCenter(...)` inline inside a `console.log`, there's no variable to reuse later (I hit `center is not defined`).
+- **Recenter a model to the origin:** `gltf.scene.position.sub(center)` shifts it so its bbox center lands at `(0,0,0)`. Do this — a centered model makes camera/waypoint numbers symmetric and sane instead of orbiting some random offset.
+- **Frame it (how far back the camera goes):** `distance ≈ (maxDimension / 2) / tan(fov/2)`, plus margin. For an 86-unit-long beam at 75° FOV → `43 / tan(37.5°) ≈ 56` units. Camera closer than that = model overflows / you're inside it.
+- **[DRACOLoader](https://threejs.org/docs/#examples/en/loaders/DRACOLoader)** — a `.glb` can be Draco-compressed; `GLTFLoader` alone throws `No DRACOLoader instance provided`.
+  - `const draco = new DRACOLoader(); draco.setDecoderPath('/draco/gltf/'); gltfLoader.setDRACOLoader(draco)`.
+  - The decoder is separate WASM three.js doesn't bundle. **Self-host:** copy `node_modules/three/examples/jsm/libs/draco/` → `public/draco/`, point the path at `/draco/gltf/` (served at site root, like `/models/`). Dispose with `draco.dispose()`.
+
+---
+
+## 🖱️ Input & Responsiveness
+
+- **Drive a paused gsap timeline by input, not autoplay:** build `gsap.timeline({ paused: true })`, keep a `target` progress `0..1`, and on each input event do `gsap.to(tl, { progress: target, duration, ease, overwrite: true })`. The eased tween toward `target` *is* a hand-rolled ScrollTrigger `scrub` — no scroll height needed for a `fixed` canvas.
+  - `overwrite: true` — each new input kills the previous progress-tween so they don't stack/fight.
+  - Always `THREE.MathUtils.clamp(target, 0, 1)` so you can't scrub past the ends.
+- **`wheel` is desktop-only — touch devices never fire it.** For responsiveness add a touch fallback so mobile can drive the same timeline.
+  - Wheel gives you `e.deltaY` directly. Touch does NOT — track frame-to-frame: `onTouchStart` stores `lastY = e.touches[0].clientY`, `onTouchMove` computes `delta = lastY - y` then updates `lastY`.
+  - **Separate sensitivity constants per input** — a finger drag spans far more pixels than a wheel notch (wheel ≈ `0.0005`, touch ≈ `0.002`). Tune independently.
+- **DRY the inputs:** both wheel + touch should mutate `target` then call one shared `applyProgress()` — a single source of truth for the scrub feel, instead of duplicating the `gsap.to`.
+- **`{ passive: false }` on `touchmove`** if you need `e.preventDefault()` (to block native scroll / pull-to-refresh). A passive listener physically cannot preventDefault.
+- Attach input listeners to `renderer.domElement` (the canvas under the finger/cursor), not `window`, so the gesture is scoped to the experiment.
+
+---
+
 ## 🧰 General / Reference
 
 - **[three.js docs](https://threejs.org/docs/)** · **[three.js examples](https://threejs.org/examples/)** · **[three.js manual](https://threejs.org/manual/)**
