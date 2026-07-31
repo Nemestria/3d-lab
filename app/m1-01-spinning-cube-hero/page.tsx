@@ -1,8 +1,7 @@
 'use client'
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
-
-
+import LabHint from '@/components/ui/LabHint'
 
 
 export default function LabExperiment() {
@@ -80,6 +79,14 @@ export default function LabExperiment() {
         <input type="range" min={0} max={0.05} step={0.001} onChange={(e) => { speedRef.current = Number(e.target.value)}} />
       </label>
       </div>
+    <LabHint
+      title="Spinning Cube Hero"
+      steps={[
+        'Use the panel (top-right) to recolour the cube.',
+        'Drag Size to scale it up or down.',
+        'Drag Speed to change how fast it spins.',
+      ]}
+    />
   </>
   )
 }

@@ -6,6 +6,7 @@ import * as THREE from 'three'
 import { GLTFLoader, HDRLoader, DRACOLoader } from 'three/examples/jsm/Addons.js'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import LabHint from '@/components/ui/LabHint'
 
 export default function LabExperiment() {
   const mountRef = useRef<HTMLDivElement>(null)
@@ -28,7 +29,7 @@ export default function LabExperiment() {
     scene.background = new THREE.Color(0x721515);
     // ⬇️ TODO [P4]: build something worth touring — a small "set" of meshes,
     //    or load a .glb. Add lights (or an environment) so it reads on camera.
-    const hdrLoader = new HDRLoader;
+    const hdrLoader = new HDRLoader();
     hdrLoader.load('/textures/hdri/m1-03-hdri.hdr', (envMap) => {
       envMap.mapping = THREE.EquirectangularReflectionMapping;
       scene.environment = envMap;
@@ -46,6 +47,15 @@ export default function LabExperiment() {
       model = gltf.scene;
       const box = new THREE.Box3().setFromObject(gltf.scene)
       const center = box.getCenter(new THREE.Vector3)
+      gltf.scene.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          child.geometry.computeVertexNormals();
+          const mat = child.material as THREE.MeshStandardMaterial
+          mat.metalness = 0.7;
+          mat.roughness = 0.5;
+          mat.color.set('#b06a3a');
+        }
+      })
       scene.add(gltf.scene);
       gltf.scene.position.sub(center);
     })
@@ -177,5 +187,16 @@ export default function LabExperiment() {
       mount.removeChild(renderer.domElement);
     }
   }, [])
-  return <div ref={mountRef} className="fixed inset-0 w-screen h-screen" />
+  return (
+    <>
+      <div ref={mountRef} className="fixed inset-0 w-screen h-screen" />
+      <LabHint
+        title="Cinematic Camera Tour"
+        steps={[
+          'Scroll (mouse wheel) to fly the camera through the tour.',
+          'On touch, drag up or down to travel the tour.',
+        ]}
+      />
+    </>
+  )
 }

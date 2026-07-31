@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/Addons.js'
 import { Timer } from 'three/src/core/Timer.js'
+import LabHint from '@/components/ui/LabHint'
 // Do NOT remove 'use client' — three.js runs in window.
 
 export default function LabExperiment() {
@@ -280,5 +281,17 @@ export default function LabExperiment() {
       
     }
   }, [])
-  return <div ref={mountRef} className="fixed inset-0 w-screen h-screen" />
+  return (
+    <>
+      <div ref={mountRef} className="fixed inset-0 w-screen h-screen" />
+      <LabHint
+        title="Interactive Solar System"
+        steps={[
+          'Drag to orbit the camera around the system.',
+          'Scroll to zoom in and out.',
+          'Click a planet to highlight it for a second.',
+        ]}
+      />
+    </>
+  )
 }

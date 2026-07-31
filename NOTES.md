@@ -52,6 +52,9 @@ it earned a spot so future-you doesn't re-read junk.
 - **[DRACOLoader](https://threejs.org/docs/#examples/en/loaders/DRACOLoader)** — a `.glb` can be Draco-compressed; `GLTFLoader` alone throws `No DRACOLoader instance provided`.
   - `const draco = new DRACOLoader(); draco.setDecoderPath('/draco/gltf/'); gltfLoader.setDRACOLoader(draco)`.
   - The decoder is separate WASM three.js doesn't bundle. **Self-host:** copy `node_modules/three/examples/jsm/libs/draco/` → `public/draco/`, point the path at `/draco/gltf/` (served at site root, like `/models/`). Dispose with `draco.dispose()`.
+- **Odd normals on a loaded `.glb`** (blocky facets, dark patches under light) — often **Draco** quantizes/mangles them. Fix in the load callback: traverse and `child.geometry.computeVertexNormals()` to rebuild smooth per-vertex normals.
+  - Only works if the **winding order** is correct. If the model looks inside-out (solid from inside, see-through outside), that's flipped faces → band-aid `material.side = THREE.DoubleSide`, real fix is Blender "Recalculate Normals Outside" + re-export.
+  - Hard-edge vs smooth look = `material.flatShading` + `material.needsUpdate = true`.
 
 ---
 
