@@ -7,7 +7,7 @@ Legend: `[ ]` not started · `[~]` in progress · `[x]` shipped
 ## M1 — Vanilla Fundamentals
 - [x] P1 — Spinning Cube Hero
 - [x] P2 — Interactive Solar System
-- [~] P3 — GLTF Product Configurator
+- [x] P3 — GLTF Product Configurator
 ## M2 — Motion & Scrollytelling
 - [ ] P4 — Cinematic Camera Tour
 - [ ] P5 — Scrollytelling Exploded View
