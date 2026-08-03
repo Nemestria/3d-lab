@@ -21,13 +21,13 @@ pnpm add gsap
 
 ## Done when
 
-- [ ] A small scene/set renders, lit well enough to read on camera.
-- [ ] At least 3 camera waypoints (position + look target) are defined.
-- [ ] A gsap timeline flies the camera between them with eased motion.
-- [ ] The tour is driven either by autoplay OR scrubbed by ScrollTrigger.
-- [ ] `camera.lookAt(...)` is updated during the tween (onUpdate), so framing stays right.
-- [ ] `renderer.setPixelRatio(Math.min(devicePixelRatio, 2))` is set.
-- [ ] Resize keeps the scene un-stretched.
+- [V] A small scene/set renders, lit well enough to read on camera.
+- [V] At least 3 camera waypoints (position + look target) are defined.
+- [V] A gsap timeline flies the camera between them with eased motion.
+- [V] The tour is driven either by autoplay OR scrubbed by ScrollTrigger.
+- [V] `camera.lookAt(...)` is updated during the tween (onUpdate), so framing stays right.
+- [V] `renderer.setPixelRatio(Math.min(devicePixelRatio, 2))` is set.
+- [V] Resize keeps the scene un-stretched.
 - [ ] Cleanup: raf cancelled, gsap timeline + all ScrollTriggers killed, geometries/materials/textures + renderer disposed, listeners removed, canvas removed.
 - [ ] Tested on mobile viewport.
 - [ ] No `any` types.

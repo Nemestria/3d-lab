@@ -1,11 +1,12 @@
 'use client'
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
-// ⬇️ TODO [P5]: add the imports YOU need:
-//   - GLTFLoader (+ DRACOLoader if the model is Draco-compressed)
-//   - gsap  →  import gsap from 'gsap'
-//   - ScrollTrigger  →  import { ScrollTrigger } from 'gsap/ScrollTrigger'
-// Do NOT remove 'use client' — three.js runs in window.
+import { GLTFLoader, HDRLoader, DRACOLoader } from 'three/examples/jsm/Addons.js'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import LabHint from '@/components/ui/LabHint'
+import { title } from 'process'
+
 export default function LabExperiment() {
   const mountRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
@@ -14,25 +15,84 @@ export default function LabExperiment() {
 
     // ⬇️ TODO [P5]: the trio — Scene, PerspectiveCamera, WebGLRenderer.
     //    Required: renderer.setPixelRatio(Math.min(devicePixelRatio, 2)).
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight,
+      0.1, 5000);
+    const renderer = new THREE.WebGLRenderer();
 
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    mount.appendChild(renderer.domElement);
+    camera.position.set(0, 20, 90);
+
+    scene.background = new THREE.Color(0x721515);
+    const hdrLoader = new HDRLoader();
+    hdrLoader.load('/textures/hdri/m1-03-hdri.hdr', (envMap) => {
+      envMap.mapping = THREE.EquirectangularReflectionMapping;
+      scene.environment = envMap;
+    });
+
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+
+    const light = new THREE.DirectionalLight();
+    light.position.set(100, 100, 100);
+    scene.add(light);
     // ⬇️ TODO [P5]: load a multi-PART model (something with separable pieces), light it.
     //    Capture each part you want to move — store its resting position
     //    (part.position.clone()) so you can offset it and return.
-
+    let model: THREE.Object3D | null = null;
+    const gltfLoader = new GLTFLoader();
+    gltfLoader.load('/models/Edgeering.glb', (gltf) => {
+      model = gltf.scene;
+      const box = new THREE.Box3().setFromObject(gltf.scene)
+      const center = box.getCenter(new THREE.Vector3)
+      gltf.scene.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          child.geometry.computeVertexNormals();
+          const mat = child.material as THREE.MeshStandardMaterial
+          mat.metalness = 0.7;
+          mat.roughness = 0.5;
+          mat.color.set('#b06a3a');
+        }
+      })
+      scene.add(gltf.scene);
+      gltf.scene.position.sub(center);
+    })
+    const dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath('/draco/gltf/');
+    gltfLoader.setDRACOLoader(dracoLoader);
     // ⬇️ TODO [P5]: register ScrollTrigger — this project IS scroll-driven, unlike P4.
     //    gsap.registerPlugin(ScrollTrigger)
+
+    gsap.registerPlugin(ScrollTrigger);
 
     // ⬇️ TODO [P5]: the EXPLODE — build a gsap timeline (scrub: true) tied to a tall
     //    scrollable element. As the user scrolls, tween each part OUTWARD along its
     //    own direction (e.g. from center), then optionally reassemble. Pin the canvas
     //    (ScrollTrigger `pin`) so it stays put while the story scrolls.
-
+    const tl = gsap.timeline({
+      paused: true,
+      defaults: {
+        duration: 1,
+        ease: "power1.inOut",
+      },
+      scrollTrigger: {
+        trigger: mount,
+        start: "top top",
+        end: "bottom bottom",
+        pin: true,
+        anticipatePin: 1,
+        scrub: true,
+      },
+    })
     // ⬇️ TODO [P5]: NOTE — this route needs real scroll HEIGHT. The canvas is fixed,
     //    so add a tall spacer element (see the returned JSX) for ScrollTrigger to track.
 
     let raf = 0
     const tick = () => {
       // ⬇️ TODO [P5]: renderer.render(scene, camera). (Optional camera controls update.)
+      renderer.render(scene, camera);
+
       raf = requestAnimationFrame(tick)
     }
     tick()
@@ -53,5 +113,18 @@ export default function LabExperiment() {
   // ⬇️ TODO [P5]: the fixed canvas + a TALL spacer to generate scroll distance.
   //    e.g. <div ref={mountRef} className="fixed inset-0 ..." /> then a
   //    <div className="h-[400vh]" /> so there is something to scroll through.
-  return <div ref={mountRef} className="fixed inset-0 w-screen h-screen" />
+  return (
+    <>
+      <div ref={mountRef} className="fixed inset-0 w-screen h-screen" />)
+    <div ref={mountRef} className="fixed inset-0 w-screen h-screen" />
+    <div className="h-[400vh]" />
+    <LabHint 
+      title="Scrollytelling Exploded View"
+      steps={[
+        "Scroll down to see the model explode into its parts.",
+        "Scroll back up to reassemble the model.",
+      ]
+    } />
+  </>   
+  )
 }

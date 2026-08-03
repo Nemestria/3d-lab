@@ -21,11 +21,14 @@ furniture with components. Free: [Khronos glTF samples](https://github.com/Khron
 
 ## Done when
 
-- [ ] A multi-part model loads and renders, lit well enough to read.
-- [ ] Each explodable part's resting position is captured (`part.position.clone()`).
-- [ ] Scrolling scrubs a gsap timeline that moves parts outward (ScrollTrigger `scrub`).
-- [ ] The canvas is **pinned** while the explode plays (ScrollTrigger `pin`), with real scroll height (tall spacer).
-- [ ] Motion is eased; parts return cleanly if you reassemble.
+- [ ] A multi-part model loads, is **centered** (Box3), and is lit well enough to read.
+- [ ] Each animated part's resting pose is captured (`part.position.clone()` in `userData`).
+- [ ] The canvas is **pinned** while the story plays (ScrollTrigger `pin`), with real scroll height (tall spacer).
+- [ ] Scrolling **scrubs** a gsap timeline (`scrub: true` inside `scrollTrigger`) that:
+  - moves the **camera** through the scene, AND
+  - translates at least one model **part** away from its resting pose.
+- [ ] **Synced narrative:** text appears/changes in the margin as you scroll (HTML/React overlay tied to scroll progress or per-section ScrollTriggers).
+- [ ] Motion is eased; camera + parts return cleanly when scrolling back up (tween toward the stored resting values).
 - [ ] `renderer.setPixelRatio(Math.min(devicePixelRatio, 2))` is set.
 - [ ] Resize keeps the model un-stretched **and** calls `ScrollTrigger.refresh()`.
 - [ ] Cleanup: raf cancelled, gsap timeline + all ScrollTriggers killed, geometries/materials/textures + renderer disposed, listeners removed, canvas removed.
