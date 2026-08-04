@@ -84,3 +84,5 @@ it earned a spot so future-you doesn't re-read junk.
 - three.js rotations are **radians**, not degrees. `33` ≠ 33°.
 - `PointLight(color, intensity, distance, decay)` — a huge `decay` kills the light within ~1 unit. Default `decay` is 2 (physical inverse-square).
 - Camera *inside* a mesh (position closer than the mesh radius) = you see back-faces / nothing.
+- **gsap: `registerPlugin(ScrollTrigger)` MUST run before any timeline that uses `scrollTrigger`.** If it runs after, gsap fires `_missingPlugin` and the ScrollTrigger silently doesn't attach. Worse, in Next dev the warning gets stringified by the log-forwarder, which enumerates the page's `searchParams` Promise → you get bogus "params must be unwrapped with React.use()" errors that have NOTHING to do with your code. Lesson: a scary framework error can be a downstream symptom — expand the stack trace and read *below* the framework frames (the real culprit was `_missingPlugin @ gsap-core.js`).
+- **Stale `.next` cache:** if an error's line numbers don't match your current file, it's a cached compile. Stop the dev server, delete `.next`, restart. A browser refresh alone won't clear a bad compiled module.

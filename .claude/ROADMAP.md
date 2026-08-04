@@ -10,8 +10,8 @@ Legend: `[ ]` not started · `[~]` in progress · `[x]` shipped
 - [x] P3 — GLTF Product Configurator
 ## M2 — Motion & Scrollytelling
 - [x] P4 — Cinematic Camera Tour
-- [~] P5 — Scrollytelling Exploded View
-- [ ] P6 — Neon Bloom Sign
+- [x] P5 — Scrollytelling Exploded View
+- [~] P6 — Neon Bloom Sign
 ## M3 — React Three Fiber + Drei
 - [ ] P7 — R3F Floating Laptop
 - [ ] P8 — HTML / 3D Mixed Layout
