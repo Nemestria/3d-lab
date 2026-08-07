@@ -8,12 +8,16 @@ import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPa
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
-
+import SliderPanel from '@/components/ui/SliderPanel'
 import LabHint from '@/components/ui/LabHint'
 
 // Do NOT remove 'use client' — three.js runs in window.
 export default function LabExperiment() {
+  const bloomRef = useRef<UnrealBloomPass | null>(null)
   const mountRef = useRef<HTMLDivElement>(null)
+  const strength = 0.15; // Bloom strength
+  const radius = 0.50;   // Bloom radius
+  const threshold = .15; // Bloom threshold
   useEffect(() => {
     const mount = mountRef.current
     if (!mount) return
@@ -66,14 +70,12 @@ export default function LabExperiment() {
 
 
     const resolution = new THREE.Vector2(window.innerWidth, window.innerHeight);
-    const strength = 0.15; // Bloom strength
-    const radius = 0.50;   // Bloom radius
-    const threshold = .15; // Bloom threshold
 
     const composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
-    composer.addPass(new UnrealBloomPass(resolution, strength, radius, threshold));
-
+    const bloomPass = new UnrealBloomPass(resolution, strength, radius, threshold);
+    bloomRef.current = bloomPass;
+    composer.addPass(bloomPass);
 
     let raf = 0
     const tick = () => {
@@ -105,6 +107,7 @@ export default function LabExperiment() {
         signMesh.geometry.dispose();
         (signMesh.material as THREE.Material).dispose();
       }
+      bloomRef.current?.dispose();
       composer.dispose();
       renderer.dispose();
       mount.removeChild(renderer.domElement);
@@ -115,11 +118,23 @@ export default function LabExperiment() {
   return (
     <>
     <div ref={mountRef} className="fixed inset-0 w-screen h-screen" />
-    <LabHint 
+    <SliderPanel
+  title="BLOOM"
+  sliders={[
+    { label: 'STRENGTH',  min: 0, max: 3, step: 0.01, defaultValue: strength,
+      onChange: (v) => { if (bloomRef.current) bloomRef.current.strength = v } },
+    { label: 'RADIUS',    min: 0, max: 1, step: 0.01, defaultValue: radius,
+      onChange: (v) => { if (bloomRef.current) bloomRef.current.radius = v } },
+    { label: 'THRESHOLD', min: 0, max: 1, step: 0.01, defaultValue: threshold,
+      onChange: (v) => { if (bloomRef.current) bloomRef.current.threshold = v } },
+  ]}
+/>
+    <LabHint
       title="Neon Bloom Sign"
       steps={[
-        "A glowing sign is rendered with bloom postprocessing.",
-        "Resize the window to see the effect adapt.",
+        "A glowing sign, rendered through bloom post-processing.",
+        "Drag the sliders (top-right) to tune strength, radius & threshold.",
+        "Drag on the sign to orbit around it.",
       ]}
     />
     </>
