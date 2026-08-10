@@ -27,6 +27,8 @@
 # large 3D assets (HDRIs etc.) — keep local, too big for git history
 *.exr
 *.hdr
+# but DO commit HDRIs that live in /public — they're served assets the deploy needs
+!public/**/*.hdr
 
 # debug
 npm-debug.log*

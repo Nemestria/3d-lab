@@ -14,7 +14,7 @@ Legend: `[ ]` not started · `[~]` in progress · `[x]` shipped
 - [x] P6 — Neon Bloom Sign
 ## M3 — React Three Fiber + Drei
 - [x] P7 — R3F Floating Laptop
-- [~] P8 — HTML / 3D Mixed Layout
+- [x] P8 — HTML / 3D Mixed Layout
 - [ ] P9 — Glassmorphism Orb
 ## M4 — Shaders & Performance
 - [ ] P10 — 100k Dust Motes (InstancedMesh)
