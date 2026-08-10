@@ -15,9 +15,9 @@ Legend: `[ ]` not started · `[~]` in progress · `[x]` shipped
 ## M3 — React Three Fiber + Drei
 - [x] P7 — R3F Floating Laptop
 - [x] P8 — HTML / 3D Mixed Layout
-- [~] P9 — Glassmorphism Orb
+- [x] P9 — Glassmorphism Orb
 ## M4 — Shaders & Performance
-- [ ] P10 — 100k Dust Motes (InstancedMesh)
+- [~] P10 — 100k Dust Motes (InstancedMesh)
 - [ ] P11 — Twisted 3D Text (GLSL)
 - [ ] P12 — CAPSTONE: Hover Flowmap
 ## Logistics
