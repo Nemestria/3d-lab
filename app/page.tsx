@@ -133,8 +133,12 @@ export default function Home() {
         ))}
       </div>
 
-      <footer className="mt-24 border-t border-zinc-900 pt-6 text-xs text-zinc-700">
-        ALE · 3D LAB — lab.alejandrosancho.com
+      <footer className="mt-24 space-y-2 border-t border-zinc-900 pt-6 text-xs text-zinc-700">
+        <p>ALE · 3D LAB — lab.alejandrosancho.com</p>
+        <p className="text-zinc-800">
+          Credits — “Alagard” font by Pix3M (CC BY) · “Computer” 3D model by
+          dark_igorek (CC Attribution).
+        </p>
       </footer>
     </main>
   );
