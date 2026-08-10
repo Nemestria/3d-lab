@@ -43,7 +43,7 @@ export default function R3FLabExperiment() {
               distanceFactor={5} 
               position={[6, 5, 0]} 
               occlude="blending">
-                <div className="block mb-4 mx-auto border-b border-slate-300 pb-2 max-w-[360px]">
+                <div className="block mb-4 mx-auto border-b border-slate-300 pb-2 max-w-[160px]">
                   <a 
                       target="_blank" 
                       href="https://threejs.org/" 
@@ -55,7 +55,7 @@ export default function R3FLabExperiment() {
                   <div className="relative flex flex-col text-gray-700 bg-white shadow-md bg-clip-border rounded-xl w-96">
                     <div className="relative mx-4 mt-4 overflow-hidden text-gray-700 bg-white bg-clip-border rounded-xl h-96">
                       <img
-                          // src="/commodoro.jpg"
+                          src="/commodoro.jpg"
                           alt="card-image" className="object-cover w-full h-full" />
                     </div>
                     <div className="p-6">
