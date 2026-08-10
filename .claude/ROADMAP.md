@@ -13,7 +13,7 @@ Legend: `[ ]` not started · `[~]` in progress · `[x]` shipped
 - [x] P5 — Scrollytelling Exploded View
 - [x] P6 — Neon Bloom Sign
 ## M3 — React Three Fiber + Drei
-- [~] P7 — R3F Floating Laptop
+- [x] P7 — R3F Floating Laptop
 - [ ] P8 — HTML / 3D Mixed Layout
 - [ ] P9 — Glassmorphism Orb
 ## M4 — Shaders & Performance
