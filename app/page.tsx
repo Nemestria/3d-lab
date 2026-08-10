@@ -37,16 +37,16 @@ const LAB: Milestone[] = [
     projects: [
       { id: "P7", name: "R3F Floating Laptop", href: "/m3-07-r3f-floating-laptop" },
       { id: "P8", name: "HTML / 3D Mixed Layout", href: "/m3-08-html-3d-mixed-layout" },
-      { id: "P9", name: "Glassmorphism Orb", href: "/m3-09-glassmorphism-orb" },
+      { id: "P9", name: "Glassmorphism Orb" },
     ],
   },
   {
     code: "M4",
     title: "Shaders & Performance",
     projects: [
-      { id: "P10", name: "100k Dust Motes", href: "/m4-10-dust-motes" },
-      { id: "P11", name: "Twisted 3D Text", href: "/m4-11-twisted-3d-text" },
-      { id: "P12", name: "Capstone — Hover Flowmap", href: "/m4-12-hover-flowmap" },
+      { id: "P10", name: "100k Dust Motes" },
+      { id: "P11", name: "Twisted 3D Text" },
+      { id: "P12", name: "Capstone — Hover Flowmap" },
     ],
   },
 ];
