@@ -1,13 +1,11 @@
 @import "tailwindcss";
 
-/* Retro display face. local() uses your OS-installed Alagard immediately;
-   the url() fallbacks kick in once you drop the file in public/fonts/
-   (needed for deploy / other machines). */
+/* Retro display face (Alagard by Pix3M, CC-BY). local() uses an OS-installed
+   copy if present; otherwise the bundled .ttf loads — works on deploy / any machine. */
 @font-face {
   font-family: "Alagard";
   src:
     local("Alagard"),
-    url("/fonts/alagard.woff2") format("woff2"),
     url("/fonts/alagard.ttf") format("truetype");
   font-display: swap;
 }
