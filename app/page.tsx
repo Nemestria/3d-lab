@@ -37,7 +37,7 @@ const LAB: Milestone[] = [
     projects: [
       { id: "P7", name: "R3F Floating Laptop", href: "/m3-07-r3f-floating-laptop" },
       { id: "P8", name: "HTML / 3D Mixed Layout", href: "/m3-08-html-3d-mixed-layout" },
-      { id: "P9", name: "Glassmorphism Orb" },
+      { id: "P9", name: "Glassmorphism Orb", href: "/m3-09-glassmorphism-orb" },
     ],
   },
   {

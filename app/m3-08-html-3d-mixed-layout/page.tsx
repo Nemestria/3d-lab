@@ -1,12 +1,16 @@
 'use client'
 import { Canvas } from '@react-three/fiber'
-import { useRef, Suspense } from 'react'
+import { useRef, Suspense, useEffect } from 'react'
 import { Html, OrbitControls, Environment, useGLTF,  } from '@react-three/drei'
 import LabHint from '@/components/ui/LabHint'
 import { Group } from 'three'
 
 function Computer({ objectRef }: { objectRef: React.Ref<Group> }) {
   const { scene } = useGLTF('/models/computer.glb')
+  useEffect(() => {
+    const id = requestAnimationFrame(() => window.dispatchEvent(new Event('resize')))
+    return () => cancelAnimationFrame(id)
+  }, [])
   return <primitive object={scene} ref={objectRef} />
 }
 
@@ -51,7 +55,7 @@ export default function R3FLabExperiment() {
                   <div className="relative flex flex-col text-gray-700 bg-white shadow-md bg-clip-border rounded-xl w-96">
                     <div className="relative mx-4 mt-4 overflow-hidden text-gray-700 bg-white bg-clip-border rounded-xl h-96">
                       <img
-                          src="/commodoro.jpg"
+                          // src="/commodoro.jpg"
                           alt="card-image" className="object-cover w-full h-full" />
                     </div>
                     <div className="p-6">
@@ -83,7 +87,7 @@ export default function R3FLabExperiment() {
     </div>
     <LabHint
     title="R3F Floating Laptop in HTML"
-    steps={['A computer inside an HTML component from drei.']}
+    steps={['A computer inside an HTML component from drei. Orbit controls activated, so rotate and check how occlusions works on the card']}
    />
   </>
   )
