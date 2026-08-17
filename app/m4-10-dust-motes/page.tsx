@@ -1,17 +1,31 @@
 'use client'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { OrbitControls, Environment } from '@react-three/drei'
-import { useRef, useMemo, useLayoutEffect } from 'react'
+import { OrbitControls, PerformanceMonitor, Stats } from '@react-three/drei'
+import { useRef, useState, useMemo, useLayoutEffect } from 'react'
 import * as THREE from 'three'
+import SliderPanel from '@/components/ui/SliderPanel'
+import LabHint from '@/components/ui/LabHint'
 
-function Motes({ count = 100000 }: { count?: number }) {
-  const ref = useRef<THREE.InstancedMesh>(null)
-  const dummy = useMemo(() => new THREE.Object3D(), [])
+
+function Motes( { count = 100000, branches, spin, randomness, randomnessPower, maxRadius }: { 
+    count?: number;
+    branches: number;
+    spin: number;
+    randomness: number;
+    randomnessPower: number;
+    maxRadius: number; 
+  }) {
+
+    const ref = useRef<THREE.InstancedMesh>(null)
+    const dummy = useMemo(() => new THREE.Object3D(), [])
+    const inside = new THREE.Color('#ff6030');
+    const outside = new THREE.Color('#1b3984');
+    const color = new THREE.Color();
 
   // Step 2 goes here: useLayoutEffect that seeds the galaxy positions
   useLayoutEffect(() => {
+
     if (!ref.current) return
-    const branches = 4, spin = 1, randomness = 0.2, randomnessPower = 3, maxRadius = 5
     
     for (let i = 0; i < count; i++) {
       const radius = Math.random() * maxRadius;
@@ -28,52 +42,59 @@ function Motes({ count = 100000 }: { count?: number }) {
         )
         dummy.updateMatrix()
         ref.current.setMatrixAt(i, dummy.matrix)
+        color.copy(inside).lerp(outside, radius / maxRadius);
+        ref.current.setColorAt(i, color);
     }
     ref.current.instanceMatrix.needsUpdate = true
-  }, [count, dummy]);
-  return (
-    <instancedMesh ref={ref} args={[undefined, undefined, count]}>
-      <sphereGeometry args={[0.02, 6, 6]} />
-      <meshBasicMaterial color="white" />
-    </instancedMesh>
-  )
+    if (ref.current.instanceColor) ref.current.instanceColor.needsUpdate = true;
+  }, [count, dummy, branches, spin, randomness, randomnessPower, maxRadius]);
+
+  useFrame((_, delta) => { if (ref.current) ref.current.rotation.y += delta * 0.05; })
+  
+  return <instancedMesh ref={ref} args={[undefined, undefined, count]}>
+    <sphereGeometry args={[0.02, 6, 6]} />
+    <meshBasicMaterial color="white" />
+  </instancedMesh>
 }
 
 export default function R3FLabExperiment() {
-  // ⬇️ TODO [P10]: build a <Motes /> child component rendered INSIDE <Canvas>.
-  //   The concept is InstancedMesh: ONE geometry + ONE material drawn `count`
-  //   times (100_000) in a single draw call — the only way to hit that count.
-  //
-  //   Pattern:
-  //     const ref = useRef<THREE.InstancedMesh>(null)
-  //     const dummy = useMemo(() => new THREE.Object3D(), [])
-  //     // seed positions ONCE (useLayoutEffect): for i in count →
-  //     //   dummy.position.set(randomX, randomY, randomZ); dummy.updateMatrix()
-  //     //   ref.current.setMatrixAt(i, dummy.matrix)
-  //     // then ref.current.instanceMatrix.needsUpdate = true
-  //     // animate in useFrame: re-set matrices (drift) OR rotate the whole field.
-  //     return (
-  //       <instancedMesh ref={ref} args={[geometry, material, count]}>
-  //         <sphereGeometry args={[0.02, 6, 6]} />   // TINY geo — 100k of them
-  //         <meshBasicMaterial />                     // cheap material
-  //       </instancedMesh>
-  //     )
-  //   Performance is the point: keep geo tiny, material cheap, dpr capped.
-  //   (Stretch: a custom shaderMaterial for the motes — that's the M4 GLSL path.)
+  const [branches, setBranches] = useState(4)
+  const [spin, setSpin] = useState(0.5)
+  const [randomness, setRandomness] = useState(0.8)
+  const [randomnessPower, setRandomnessPower] = useState(3)
+  const [maxRadius, setMaxRadius] = useState(15)
+
   return (
-    <div className="fixed inset-0 w-screen h-screen">
-      <Canvas
-        camera={{ position: [0, 5, 10], fov: 60 }}
-        dpr={[1, 2]}        // caps pixel ratio — critical at 100k instances
-        gl={{ antialias: true }}
-      >
-        {/* ⬇️ TODO [P10]: dark background, your <Motes count={100000} />,
-              optional <OrbitControls />. Watch the FPS meter — this project is
-              graded on hitting the count while staying smooth. Test mobile. */}
-        <Motes />
-        <Environment preset='dawn' />
-        <OrbitControls />
-      </Canvas>
-    </div>
+    <>
+      <div className="fixed inset-0 w-screen h-screen">
+        <Canvas
+          camera={{ position: [0, 5, 10], fov: 60 }}
+          dpr={[1, 2]}        // caps pixel ratio — critical at 100k instances
+          gl={{ antialias: true }}
+        >
+          <color attach="background" args={['#000010']} />
+          <Motes branches={branches} spin={spin} randomness={randomness} randomnessPower={randomnessPower} maxRadius={maxRadius} />
+          <OrbitControls />
+          <Stats className='!left-4 !top-auto !bottom-16'/>
+
+        </Canvas>
+      </div>
+      <SliderPanel title="GALAXY" sliders={[
+        { label: 'BRANCHES', min: 1, max: 10, step: 1, defaultValue: branches, onChange: setBranches },
+        { label: 'SPIN', min: -2, max: 2, step: 0.01, defaultValue: spin, onChange: setSpin },
+        { label: 'RANDOMNESS', min: 0, max: 2, step: 0.01, defaultValue: randomness, onChange: setRandomness },
+        { label: 'CONCENTRATION', min: 1, max: 6, step: 0.1, defaultValue: randomnessPower, onChange: setRandomnessPower },
+        { label: 'RADIUS', min: 3, max: 25, step: 0.5, defaultValue: maxRadius, onChange: setMaxRadius },
+        ]} 
+      />
+      <LabHint
+        title="100k Dust Motes"
+        steps={[
+          '100,000 motes drawn as one InstancedMesh — a spiral galaxy.',
+          'Drag to orbit · scroll to zoom.',
+          'Use the sliders to reshape the spiral live.',
+        ]}
+      />
+    </>
   )
 }

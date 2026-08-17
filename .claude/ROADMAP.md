@@ -17,7 +17,7 @@ Legend: `[ ]` not started · `[~]` in progress · `[x]` shipped
 - [x] P8 — HTML / 3D Mixed Layout
 - [x] P9 — Glassmorphism Orb
 ## M4 — Shaders & Performance
-- [~] P10 — 100k Dust Motes (InstancedMesh)
+- [x] P10 — 100k Dust Motes (InstancedMesh)
 - [ ] P11 — Twisted 3D Text (GLSL)
 - [ ] P12 — CAPSTONE: Hover Flowmap
 ## Logistics
