@@ -1,6 +1,6 @@
 'use client'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { OrbitControls, PerformanceMonitor, Stats } from '@react-three/drei'
+import { OrbitControls, Stats } from '@react-three/drei'
 import { useRef, useState, useMemo, useLayoutEffect } from 'react'
 import * as THREE from 'three'
 import SliderPanel from '@/components/ui/SliderPanel'

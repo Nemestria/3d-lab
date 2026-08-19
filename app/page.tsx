@@ -45,7 +45,7 @@ const LAB: Milestone[] = [
     title: "Shaders & Performance",
     projects: [
       { id: "P10", name: "100k Dust Motes", href: "/m4-10-dust-motes" },
-      { id: "P11", name: "Twisted 3D Text" },
+      { id: "P11", name: "Twisted 3D Text", href: "/m4-11-twisted-3d-text" },
       { id: "P12", name: "Capstone — Hover Flowmap" },
     ],
   },
