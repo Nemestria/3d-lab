@@ -18,7 +18,7 @@ Legend: `[ ]` not started · `[~]` in progress · `[x]` shipped
 - [x] P9 — Glassmorphism Orb
 ## M4 — Shaders & Performance
 - [x] P10 — 100k Dust Motes (InstancedMesh)
-- [~] P11 — Twisted 3D Text (GLSL)
+- [x] P11 — Twisted 3D Text (GLSL)
 - [ ] P12 — CAPSTONE: Hover Flowmap
 ## Logistics
 - Repo: https://github.com/Nemestria/3d-lab
